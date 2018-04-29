@@ -5,8 +5,6 @@ use piston_window::math::Matrix2d;
 use std::cmp::min;
 
 fn tree<G:Graphics>(transform: Matrix2d, g: &mut G, depth: usize) {
-//    println!("View size: {:?}", c.get_view_size());
-
     line([0.7, 0.5, 0.2, 1.0], 0.1, [0.0, 0.0, 0.0, 0.5], transform, g);
 }
 
