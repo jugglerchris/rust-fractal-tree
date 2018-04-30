@@ -58,8 +58,8 @@ impl Tree {
     pub fn draw<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G) {
         let depth = self.depth;
         let t = self.time_elapsed();
-        self.rotf1 = -2.0 + t.sin() * 2.0;
-        self.rotf2 = 5.0 + t.sin() * 2.0;
+        self.rotf1 = -2.5 + (t*2.).sin() * 2.0;
+        self.rotf2 = 5.0 + (t*2.).cos() * 2.0;
         self.tree(transform, g, depth);
     }
 }
