@@ -3,6 +3,7 @@ extern crate piston_window;
 use piston_window::*;
 use piston_window::math::Matrix2d;
 use std::cmp::min;
+use std::time::Instant;
 
 const BROWN: [f32;4] = [0.7, 0.5, 0.2, 1.0];
 const GREEN: [f32;4] = [0.0, 1.0, 0.0, 1.0];
@@ -12,6 +13,7 @@ struct Tree {
     rotf2: f64,
     depth: usize,
     leafdepth: usize,
+    start: Instant,
 }
 
 impl Tree {
@@ -21,7 +23,14 @@ impl Tree {
             rotf2: -2.0,
             depth: 7,
             leafdepth: 4,
+            start: Instant::now(),
         }
+    }
+
+    fn time_elapsed(&self) -> f64 {
+        let elapsed = self.start.elapsed();
+        (elapsed.as_secs() as f64) + (elapsed.subsec_nanos() as f64) / 1e9f64
+
     }
 
     fn leaf<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G) {
@@ -48,6 +57,9 @@ impl Tree {
 
     pub fn draw<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G) {
         let depth = self.depth;
+        let t = self.time_elapsed();
+        self.rotf1 = -2.0 + t.sin() * 2.0;
+        self.rotf2 = 5.0 + t.sin() * 2.0;
         self.tree(transform, g, depth);
     }
 }
