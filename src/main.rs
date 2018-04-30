@@ -10,6 +10,8 @@ const GREEN: [f32;4] = [0.0, 1.0, 0.0, 1.0];
 struct Tree {
     rotf1: f64,
     rotf2: f64,
+    depth: usize,
+    leafdepth: usize,
 }
 
 impl Tree {
@@ -17,29 +19,36 @@ impl Tree {
         Tree {
             rotf1: 5.0,
             rotf2: -2.0,
+            depth: 7,
+            leafdepth: 4,
         }
     }
 
-    pub fn leaf<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G) {
+    fn leaf<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G) {
         const STALK_LEN: f64 = 0.02;
         line(GREEN, 0.005, [0.0, 0.025, 0.0, 0.025 + STALK_LEN], transform, g);
         polygon(GREEN, &[[-0.1, 0.025 + STALK_LEN], [0.1, 0.025 + STALK_LEN], [0.0, 0.025 + STALK_LEN + 0.2]], transform, g);
     }
 
-    pub fn tree<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G, depth: usize, leafdepth: usize) {
+    fn tree<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G, depth: usize) {
         line(BROWN, 0.025, [0.0, 0.0, 0.0, 0.5], transform, g);
         if depth >= 1 {
             let scale1 = 1./1.3;
             let scale2 = 1./1.7;
             let rot1 = (depth as f64) * self.rotf1;
             let rot2 = (depth as f64) * self.rotf2;
-            self.tree(transform.trans(0.0, 0.5).rot_deg(rot1).scale(scale1, scale1), g, depth-1, leafdepth);
-            self.tree(transform.trans(0.0, 0.5).rot_deg(rot2).scale(scale2, scale2), g, depth-1, leafdepth);
+            self.tree(transform.trans(0.0, 0.5).rot_deg(rot1).scale(scale1, scale1), g, depth-1);
+            self.tree(transform.trans(0.0, 0.5).rot_deg(rot2).scale(scale2, scale2), g, depth-1);
         }
-        if depth <= leafdepth {
+        if depth <= self.leafdepth {
             self.leaf(transform.trans(0.0, 0.5).rot_deg(-60.0), g);
             self.leaf(transform.trans(0.0, 0.5).rot_deg( 60.0), g);
         }
+    }
+
+    pub fn draw<G:Graphics>(&mut self, transform: Matrix2d, g: &mut G) {
+        let depth = self.depth;
+        self.tree(transform, g, depth);
     }
 }
 
@@ -61,7 +70,7 @@ fn main() {
                          .zoom(scale)
                          .rot_deg(180.0);
             clear([1.0, 1.0, 1.0, 1.0], g);
-            tree.tree(moved, g, 7, 4);
+            tree.draw(moved, g);
         });
     }
 }
