@@ -2,7 +2,6 @@ extern crate piston_window;
 
 use piston_window::*;
 use piston_window::math::Matrix2d;
-use std::cmp::min;
 use std::time::Instant;
 
 const BROWN: [f32;4] = [0.7, 0.5, 0.2, 1.0];
@@ -66,7 +65,7 @@ impl Tree {
 
 fn main() {
     let mut window: PistonWindow =
-            WindowSettings::new("Hello Piston!", [640, 480])
+            WindowSettings::new("Chris's nice swaying tree!", [640, 480])
                 .exit_on_esc(true).build().unwrap();
 
     let mut tree = Tree::new();
